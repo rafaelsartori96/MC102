@@ -1,6 +1,6 @@
 #include <stdio.h>
 
-/*int fat(int n) {
+int fat(int n) {
     if(n <= 1)
         return 1;
     return n * fat(n - 1);
@@ -27,7 +27,7 @@ int num_combinacoes(int n) {
  * igual a das outras duas, então a nave pode voar.
  *
  */
-/*int main() {
+int main() {
     int num_cargas = 4;
     int cargas[num_cargas];
 
@@ -84,6 +84,7 @@ int num_combinacoes(int n) {
 
                 somas[ultima_soma++] = soma_atual;
             }
+            // ERRO: precisamos fazer quais somas combinar, pois há 'duplicates'
             for(int j = num_cargas - 1; j > i; j--) {
                 printf("%d, %d\n", i, j);
                 somas[ultima_soma++] = cargas[i] + cargas[j];
@@ -106,7 +107,7 @@ int num_combinacoes(int n) {
     printf("nao\n");
     return 0;
 }
-*/
+/*
 int main() {
     int c1, c2, c3, c4;
     scanf("%d %d %d %d", &c1, &c2, &c3, &c4);
@@ -128,3 +129,4 @@ int main() {
     else
         printf("nao\n");
 }
+*/
