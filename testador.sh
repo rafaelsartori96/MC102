@@ -77,3 +77,7 @@ for input in $(curl -ks "$SUSY/testes.html" | sed -n '/Testes abertos/,/Testes f
 done
 
 echo -e "\nTotal de erros encontrados: $erros"
+if [ $erros == 0 ]; then
+    rm -dr dados$lab
+    echo "Removendo pasta de dados..."
+fi
