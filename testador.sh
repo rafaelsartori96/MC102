@@ -47,7 +47,7 @@ fi
 
 echo "Compilando o programa..."
 
-gcc -std=c99 -pedantic -Wall -Werror *.c -o lab${lab} -lm
+gcc -std=c99 -pedantic -Wall *.c -o lab${lab} -lm
 if [ $? -ne 0 ] ; then
     echo "Erro na compilação. Abortando testes."
     exit
