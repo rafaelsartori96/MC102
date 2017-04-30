@@ -1,6 +1,6 @@
 #include <stdio.h>
 
-int potencia10(int potencia) {
+unsigned long potencia10(int potencia) {
     if(potencia == 0) return 1;
     return 10 * potencia10(potencia - 1);
 }
@@ -11,9 +11,9 @@ int main() {
     scanf("%d", &natural);
 
     // Checando os limites
-    // O binário de num deve estar contido em 9 algarismos. Ou seja, é no máximo
-    // 2^10 - 1
-    if(natural > 1024 - 1) {
+    // O binário de num deve estar contido em 19 algarismos. Ou seja, é no
+    // máximo 2^20 - 1
+    if(natural > 1048576 - 1) {
         printf("overflow\n");
         return 0;
     }
@@ -23,7 +23,8 @@ int main() {
     // o número) enquanto guardamos os restos da divisão. Da esquerda para a di-
     // reita, os restos representam os valores binários
 
-    int binario = 0, potencia = 0;
+    int potencia = 0;
+    unsigned long binario = 0;
 
     do {
         // Guardamos o resto da divisão por 2 de natural
@@ -34,5 +35,5 @@ int main() {
         binario += resto * potencia10(potencia++);
     } while(natural != 0);
 
-    printf("O número binário é %d.\n", binario);
+    printf("O número binário é %lu.\n", binario);
 }
