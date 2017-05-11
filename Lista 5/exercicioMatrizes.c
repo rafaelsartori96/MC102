@@ -27,6 +27,9 @@ int transposta(
     double matriz[TAMANHO_MAX][TAMANHO_MAX], int linhas, int colunas,
     double matriz3[TAMANHO_MAX][TAMANHO_MAX], int* linhas3, int* colunas3
 );
+void imprimirOcorrencias(
+    double matriz[TAMANHO_MAX][TAMANHO_MAX], int linhas, int colunas
+);
 
 int main() {
     printf("Este programa irá fazer a soma, a diferença, a transposta e a múltiplicação de matrizes.\n");
@@ -84,6 +87,13 @@ int main() {
     } else {
         printf("A transposta da segunda matriz não existe!\n");
     }
+
+    printf("\n");
+    // Agora, vamos determinar a moda e o número de menor ocorrências nas matrizes
+    printf("Matriz 1:\n");
+    imprimirOcorrencias(matriz1, linhas1, colunas1);
+    printf("\nMatriz 2:\n");
+    imprimirOcorrencias(matriz2, linhas2, colunas2);
 }
 
 void lerMatriz(double matriz[TAMANHO_MAX][TAMANHO_MAX], int* linhas, int* colunas) {
@@ -196,4 +206,48 @@ int transposta(
         }
     }
     return 1;
+}
+
+int buscarValor(double vetor[TAMANHO_MAX * TAMANHO_MAX], int tamanho, double valor) {
+    for(int i = 0; i < tamanho; i++) {
+        if(valor == vetor[i])
+            return i;
+    }
+    // Se chegamos aqui, não encontramos
+    return -1;
+}
+
+void imprimirOcorrencias(
+    double matriz[TAMANHO_MAX][TAMANHO_MAX], int linhas, int colunas
+) {
+    int tamanho = 0, indice;
+    double numeros[TAMANHO_MAX * TAMANHO_MAX];
+    int ocorrencias[TAMANHO_MAX * TAMANHO_MAX];
+
+    int indiceOcorrenciaMinima = -1, indiceOcorrenciaMaxima = -1;
+
+    for(int linha = 0; linha < linhas; linha++) {
+        for(int coluna = 0; coluna < colunas; coluna++) {
+            double valor = matriz[linha][coluna];
+
+            indice = buscarValor(numeros, tamanho, valor);
+            if(indice < 0) {
+                indice = tamanho++;
+                // Inserior valor
+                numeros[indice] = valor;
+                ocorrencias[indice] = 0;
+            }
+
+            // Aumentar ocorrencias
+            ocorrencias[indice]++;
+
+            // Guardando limites
+            if(indiceOcorrenciaMaxima < 0 || ocorrencias[indice] >= ocorrencias[indiceOcorrenciaMaxima])
+                indiceOcorrenciaMaxima = indice;
+            if(indiceOcorrenciaMinima < 0 || ocorrencias[indice] <= ocorrencias[indiceOcorrenciaMinima])
+                indiceOcorrenciaMinima = indice;
+        }
+    }
+
+    printf("O valor de maior ocorrência (%d) foi %.2lf\nO de menor ocorrência (%d), %.2lf.\n", ocorrencias[indiceOcorrenciaMaxima], numeros[indiceOcorrenciaMaxima], ocorrencias[indiceOcorrenciaMinima], numeros[indiceOcorrenciaMinima]);
 }
