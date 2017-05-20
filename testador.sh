@@ -67,6 +67,8 @@ for input in $(curl -ks "$SUSY/testes.html" | sed -n '/Testes abertos/,/Testes f
         printf "${COL_GREEN}%-12s${COL_RESET}\n" "OK"
     else
         printf "${COL_RED}%-12s${COL_RESET}\n" "Erro"
+        echo "--> Input:"
+        curl -ks "$SUSY/$input" | cat >&1
         echo ">>> Saida esperada (SuSy):"
         cat "$res_file"
         echo ">>> Saida do seu programa:"
