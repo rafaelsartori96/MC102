@@ -1,0 +1,217 @@
+/* Laboratorio 15 - Brincando com cordas
+ * Nome: Rafael Sartori Martins dos Santos
+ * RA: 186154
+ */
+
+#include <stdio.h>
+#include <string.h>
+
+int encontrarIndice(char str[], char padrao[]) {
+    // Nem testamos caso o padrão seja maior que a string atual
+    if(strlen(padrao) > strlen(str))
+        return -1;
+
+    for(int i = 0; i < strlen(str); i++) {
+        // Procurando o padrão a partir do índice i, até chegarmos no '\0'
+        for(int j = 0; j <= strlen(padrao); j++) {
+            // Paramos a procura caso chegamos no fim do padrão a ser conferido
+            if(padrao[j] == '\0') {
+                // Se chegamos até aqui, encontramos o padrão completo
+                return i;
+            }
+
+            // Vemos se é igual:
+            // (i) continuamos em j caso for,
+            // (ii) continuamos em i caso não for, através do break
+            if(str[i + j] != padrao[j])
+                // Como não é igual, saímos do loop de j e incrementamos i
+                break;
+        }
+    }
+
+    return -1;
+}
+
+/* Funcao: removePadrao
+ *
+ *    Processa linearmente (e uma unica vez) os carateres de uma dada sequencia
+ *    de movimentos, removendo as ocorrencias de um dado padrao.
+ *
+ * Parametros:
+ *          str: sequencia de movimentos '+', '-', '*'
+ *       padrao: subsequencia de movimentos, cujas ocorrencias devem ser
+ *               removidas
+ *    targetStr: sequencia obtida apos a remocao de str de todas as ocorrencias
+ *               do dado padrao.
+ *
+ *
+ * Retorno:
+ *
+ *    1, se as occorrencias do dado padrao foram removidas
+ *    0, caso contrario
+ *
+ * Exemplo:
+ *
+ *     char seq1[15] = "+-*+-*-*+++";
+ *     char seq2[15];
+ *
+ *     char padrao1[3] = "+-"
+ *     char padrao2[3] = "**"
+ *
+ *     removePadrao(seq1, padrao1, seq2); // seq2 sera "**-*+++"
+ *     removePadrao(seq1, padrao2, seq2); // seq2 sera "+-*+-*-*+++"
+ *
+ */
+int removePadrao(char str[], char padrao[], char targetStr[]) {
+    int indice = encontrarIndice(str, padrao);
+    // Se encontramos o padrão em str...
+    if(indice > -1) {
+        // Inserimos todos os elementos anteriores à indice
+        for(int i = 0; i < indice; i++) {
+            targetStr[i] = str[i];
+        }
+
+        // Removemos a partir do índice encontrado, passando todos os itens após
+        // 'indice' para trás
+        // 'strlen(padrao)' é o tamanho de padrao, logo, o primeiro índice a ser
+        // movido para 'indice' é a primeira letra após padrão, aquele posterior
+        // ao do índice 'strlen(padro) - 1'
+        for(int i = 0; ; i++) {
+            targetStr[indice + i] = str[i + indice + strlen(padrao)];
+            // Terminamos a string, podemos parar
+            if(str[i + indice + strlen(padrao)] == '\0') {
+                return 1;
+            }
+        }
+    }
+    return 0;
+}
+
+/* Funcao: removeBloco
+ *
+ *    Processa linearmente (e uma unica vez) os carateres de uma dada sequencia
+ *    de movimentos, removendo o bloco inicial delimitado pelo dado caractere.
+ *
+ * Parametros:
+ *          str: sequencia de movimentos '+', '-', '*'
+ *            c: caractere delimitador do bloco a ser removido
+ *    targetStr: se str comeca com o caractere do parametro c, targetStr
+ *               contera a sequencia obtida apos a remocao (de str) do bloco de
+ *               movimentos da primeira posicao de str ate a segunda ocorrencia
+ *               (inclusive) do caractere do parametro c. Se nao exsitir uma
+ *               segunda ocorrencia do caracter do parametro c, targetStr deve
+ *               conter a sequencia vazia.
+ *
+ * Retorno:
+ *
+ *    1, se o bloco foi removido
+ *    0, caso contrario
+ *
+ * Exemplo:
+ *
+ *     char seq1[15] = "+-*+-*-*+++";
+ *     char seq2[15] = "*+-*+-*-*+++";
+ *     char seq3[15] = "*+-+--+++";
+ *     char seq4[15];
+ *
+ *     removeBloco(seq1, '*', seq4); // seq4 sera "+-*+-*-*+++"
+ *     removeBloco(seq2, '*', seq4); // seq4 sera "+-*-*+++"
+ *     removeBloco(seq3, '*', seq4); // seq4 sera "" (sequencia vazia)
+ *
+ */
+int removeBloco(char str[], char c, char targetStr[]) {
+    // printf("removeBloco de %c até %c ou fim: %s -> ", c, c, str);
+    // Se começamos com a sequência a ser procurada, removeremos até o último
+    // índice ou até o que contém o caractere 'c'
+    if(str[0] == c) {
+        int strlen_str = strlen(str);
+        // Procuramos a partir do segundo caractere por 'c'
+        for(int i = 1; i <= strlen_str; i++) {
+            // Procuramos até o fim da string ou o próximo caractere
+            int caractereFinal = 0;
+            if(i == strlen_str || (caractereFinal = str[i] == c)) {
+                if(caractereFinal)
+                    i++;
+
+                // O índice i é o ĩndice de parada, a string final deve ser ter-
+                // minada com '\0', de preferência o do índice 'strlen_str' de
+                // str
+                for(int j = 0; i + j <= strlen_str; j++) {
+                    targetStr[j] = str[i + j];
+                }
+                // printf("%s\n", targetStr);
+                return 1;
+            }
+        }
+    }
+
+    // printf("!!\n");
+    return 0;
+}
+
+/* Funcao: substituiPadrao
+ *
+ *    Processa linearmente (e uma unica vez) os carateres de uma dada sequencia
+ *    de movimentos, substituindo as ocorrencias de um dado padrao por um novo *    padrao.
+ *
+ * Parametros:
+ *           str: sequencia de movimentos '+', '-', '*'
+ *        padrao: subsequencia de movimentos, cujas ocorrencias devem ser
+ *                substituidas pelo novoPadrao
+ *    novoPadrao: subsequencia de movimentos que deve substituir cada
+ *                ocorrencia do dado padrao
+ *     targetStr: sequencia obtida apos a substituicao em str de todas as
+ *                ocorrencias do dado padrao pelo novoPadrao
+ *
+ *     Voce pode assumir que as subsequencias padrao e novoPadrao tem o mesmo
+ * tamanho.
+ *
+ * Retorno:
+ *
+ *    1, se as ocorrencias do dado padrao foram substituidas pelo novoPadrao
+ *    0, caso contrario
+ *
+ * Exemplo:
+ *
+ *     char seq1[15] = "+*+-+*+-*++";
+ *     char seq2[15];
+ *     char seq3[15];
+ *
+ *     char padrao[5] = "+*+"
+ *     char novoPadrao[5] = "*-*"
+ *
+ *     substituiPadrao(seq1, padrao, novoPadrao, seq2); // seq2 sera
+ *                                                          "*-*-*-*-*++"
+ *     substituiPadrao(seq2, padrao, novoPadrao, seq3);  // seq3 sera
+ *                                                          "*-*-*-*-*++"
+ *
+ */
+int substituiPadrao(char str[], char padrao[], char novoPadrao[], char targetStr[]) {
+    int indice = encontrarIndice(str, padrao);
+    // Se encontramos o padrão...
+    if(indice > -1) {
+        // Removemos o padrão, após guardar o índice do padrão removido
+        removePadrao(str, padrao, targetStr);
+
+        // Colocaremos o início da string, de 0 até indice
+        for(int i = 0; i < indice; i++) {
+            targetStr[i] = str[i];
+        }
+
+        // Colocaremos o novo padrão, sem incluir o '\0'
+        for(int i = 0; i < strlen(novoPadrao); i++) {
+            targetStr[indice + i] = novoPadrao[i];
+        }
+
+        // Colocaremos o final agora, incluindo o '\0'
+        for(int i = 0; indice + strlen(padrao) + i <= strlen(str); i++) {
+            // A nova string terá o tamanho do novo padrão
+            targetStr[indice + strlen(novoPadrao) + i] =
+                // A string antiga terá o tamanho antigo
+                str[indice + strlen(padrao) + i];
+        }
+        // printf("substitui %s por %s: %s -> %s\n", padrao, novoPadrao, str, targetStr);
+        return 1;
+    }
+    return 0;
+}
