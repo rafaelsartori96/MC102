@@ -25,7 +25,7 @@ int main() {
   Base base;
   int capacidade;
 
-  if (scanf("%d\n", &capacidade) != 1) {
+  if (scanf("%d", &capacidade) != 1) {
     printf("Erro de Leitura da Capacidade\n");
     return 1;
   }
