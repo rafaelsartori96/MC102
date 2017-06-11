@@ -1,16 +1,19 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+
 
 typedef struct {
-  int ra, telefone;
-  char nome[100];
+    int ra, telefone;
+    char nome[100];
 } Aluno;
 
 typedef struct {
-  int armazenado;
-  int capacidade;
-  Aluno *alunos;
+    int armazenado;
+    int capacidade;
+    Aluno *alunos;
 } Base;
+
 
 /* Funcao: criar_base
  *
@@ -21,8 +24,10 @@ typedef struct {
  *   n: quantidade maxima de alunos
  */
 void criar_base(Base *base, int n) {
-  /* Implementar */
-  return;
+    base->capacidade = n;
+    base->armazenado = 0;
+    base->alunos = malloc(n * sizeof(Aluno));
+    printf("Base criada.\n");
 }
 
 /* Funcao: buscar
@@ -36,8 +41,11 @@ void criar_base(Base *base, int n) {
  *   -1 caso contrario.
  */
 int buscar(Base *base, int ra) {
-  /* Implementar */
-  return -1;
+    for(int i = 0; i < base->armazenado; i++) {
+        if(base->alunos[i].ra == ra)
+            return i;
+    }
+    return -1;
 }
 
 /* Funcao: imprimir
@@ -47,8 +55,13 @@ int buscar(Base *base, int ra) {
  *   ra: numero do RA
  */
 void imprimir(Base *base, int ra) {
-  /* Implementar */
-  return;
+    int indice;
+    if((indice = buscar(base, ra)) >= 0) {
+        Aluno *aluno = &base->alunos[indice];
+        printf("%d - %d - %s\n", aluno->ra, aluno->telefone, aluno->nome);
+    } else {
+        printf("Aluno %d nao encontrado.\n", ra);
+    }
 }
 
 /* Funcoes: adicionar
@@ -63,8 +76,31 @@ void imprimir(Base *base, int ra) {
  *   nome: string com o nome
  */
 void adicionar(Base *base, int ra, int telefone, char *nome) {
-  /* Implementar */
-  return;
+    int indice;
+    if((indice = buscar(base, ra)) >= 0) {
+        Aluno *aluno = &base->alunos[indice];
+
+        // Atualizando o número de telefone e nome
+        aluno->telefone = telefone;
+        strcpy(aluno->nome, nome);
+
+        printf("Alterado: ");
+        imprimir(base, ra);
+    } else if((base->armazenado + 1) > base->capacidade) {
+        printf("Erro: base cheia.\n");
+    } else {
+        Aluno aluno;
+        // Criando novo aluno
+        aluno.ra = ra;
+        aluno.telefone = telefone;
+        strcpy(aluno.nome, nome);
+
+        // Inserindo aluno
+        base->alunos[base->armazenado++] = aluno;
+
+        printf("Adicionado: ");
+        imprimir(base, ra);
+    }
 }
 
 /* Funcoes: remover
@@ -77,8 +113,19 @@ void adicionar(Base *base, int ra, int telefone, char *nome) {
  *   ra: numero do RA
  */
 void remover(Base *base, int ra) {
-  /* Implementar */
-  return;
+    int indice;
+    if((indice = buscar(base, ra)) >= 0) {
+        // Passando o vetor para a esquerda (o último índice deve ser
+        // (armazenado - 2))
+        for(int i = indice; (i + 1) < base->armazenado; i++) {
+            base->alunos[i] = base->alunos[i + 1];
+        }
+        base->armazenado--;
+
+        printf("Aluno %d removido.\n", ra);
+    } else {
+        printf("Aluno %d nao encontrado.\n", ra);
+    }
 }
 
 /* Funcao: liberar_base
@@ -91,6 +138,8 @@ void remover(Base *base, int ra) {
  *   base: ponteiro para a base
  */
 void liberar_base(Base *base) {
-  /* Implementar */
-  return;
+    free(base->alunos);
+    base->alunos = NULL;
+    base->armazenado = 0;
+    base->capacidade = 0;
 }
