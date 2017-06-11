@@ -69,11 +69,13 @@ for input in $(curl -ks "$SUSY/testes.html" | sed -n '/Testes abertos/,/Testes f
         printf "${COL_RED}%-12s${COL_RESET}\n" "Erro"
         echo "--> Input:"
         curl -ks "$SUSY/$input" | cat >&1
+        printf "\n"
         echo ">>> Saida esperada (SuSy):"
         cat "$res_file"
+        printf "\n"
         echo ">>> Saida do seu programa:"
         curl -ks "$SUSY/$input" | ./lab${lab} 2>&1
-        echo
+        printf "\n\n"
         erros=$(($erros+1))
     fi
 done
